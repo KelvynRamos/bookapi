@@ -10,7 +10,6 @@ import one.digitalinnovation.bookapi.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,14 +25,9 @@ public class BookService {
     public MessageResponseDTO createBook(BookDTO bookDTO) {
 
         Book bookToSave = bookMapper.toModel(bookDTO);
-
         Book savedBook = bookRepository.save(bookToSave);
         return createMessageResponse(savedBook.getId(), "Created book with ID");
     }
-
-
-
-
 
     public List<BookDTO> listAll() {
         List<Book> allBook = bookRepository.findAll();
@@ -48,17 +42,6 @@ public class BookService {
         return bookMapper.toDTO(book);
     }
 
-    private MessageResponseDTO createMessageResponse(Long id, String message) {
-        return MessageResponseDTO
-                .builder()
-                .message(message + id)
-                .build();
-    }
-
-    private Book verifyIfExists(Long id) throws PersonNotFoundException {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
-    }
 
     public MessageResponseDTO updateByID(Long id, BookDTO bookDTO) throws PersonNotFoundException {
         verifyIfExists(id);
@@ -74,5 +57,17 @@ public class BookService {
         verifyIfExists(id);
 
         bookRepository.deleteById(id);
+    }
+
+    private MessageResponseDTO createMessageResponse(Long id, String message) {
+        return MessageResponseDTO
+                .builder()
+                .message(message + id)
+                .build();
+    }
+
+    private Book verifyIfExists(Long id) throws PersonNotFoundException {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
     }
 }
